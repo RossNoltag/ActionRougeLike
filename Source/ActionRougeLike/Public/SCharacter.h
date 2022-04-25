@@ -14,6 +14,10 @@ class ACTIONROUGELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
+
 public:
 	// Sets default values for this character's properties
 	ASCharacter();//constructor
@@ -29,8 +33,12 @@ protected:
 	UCameraComponent* CameraComp;
 
 	void MoveForward(float value);
+	void MoveRight(float value);
+	void MoveJump();
 
-	void Turn(float value);
+	void PrimaryAttack();
+
+	void DebugLines();
 
 public:	
 	// Called every frame
