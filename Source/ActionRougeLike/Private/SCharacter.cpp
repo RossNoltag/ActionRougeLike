@@ -6,16 +6,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DrawDebugHelpers.h"
-
-
+#include "RInteractionComponent.h"
 
 // Sets default values
-ASCharacter::ASCharacter()
-{
+ASCharacter::ASCharacter(){
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//Constructor method/function, loaded first when file is called
-	// This where w e initialize our variables
+	//This where we initialize our variables
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("Spring Arm Component");
 	SpringArmComp->bUsePawnControlRotation = true;
@@ -23,6 +21,8 @@ ASCharacter::ASCharacter()
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("Camera Component");
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	InteractionComp = CreateDefaultSubobject<URInteractionComponent>("Interaction Component");
 
 	// bOrientRotationToMovement = alows the character to turn and run in the left or right direction
 	// if bUseCOntrollerRotationYaw is true this wont come into effect
@@ -34,8 +34,7 @@ ASCharacter::ASCharacter()
 }
 
 // Called when the game starts or when spawned
-void ASCharacter::BeginPlay()
-{
+void ASCharacter::BeginPlay(){
 	Super::BeginPlay();
 	//Begin play is called when everything is initialized
 	//Can possibly initialize timers etc
@@ -43,15 +42,13 @@ void ASCharacter::BeginPlay()
 
 
 // Called every frame
-void ASCharacter::Tick(float DeltaTime)
-{
+void ASCharacter::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	DebugLines();
 }
 
 // Called to bind functionality to input
-void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
@@ -63,11 +60,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack",IE_Pressed, this, &ASCharacter::PrimaryAttack);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::MoveJump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
+
+	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 }
 
-void ASCharacter::MoveForward(float Value)
-{	
+void ASCharacter::MoveForward(float Value){	
 	//Getting the Controlls rotation and setting Pitch and Roll
 	FRotator ControlRotation = GetControlRotation();
 	ControlRotation.Pitch = 0.0f;
@@ -78,8 +76,7 @@ void ASCharacter::MoveForward(float Value)
 	AddMovementInput(ControlRotation.Vector(), Value);
 }
 
-void ASCharacter::MoveRight(float Value)
-{
+void ASCharacter::MoveRight(float Value){
 	FRotator ControlRotation = GetControlRotation();
 	ControlRotation.Pitch = 0.0f;
 	ControlRotation.Roll = 0.0f;
@@ -94,27 +91,48 @@ void ASCharacter::MoveRight(float Value)
 	//Z=Up		(Blue)
 }
 
-void ASCharacter::MoveJump()
-{	
+/*
+void ASCharacter::MoveJump(){	
 	UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	Jump();
 	//AddMovementInput(GetActorForwardVector(), Value);
 }
+*/
 
-void ASCharacter::PrimaryAttack()
-{
-	FVector MeshLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	FTransform SpawmTM = FTransform(GetControlRotation(), MeshLocation);
+void ASCharacter::PrimaryAttack(){
+	PlayAnimMontage(PrimaryAttackAnim);
+    GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed,0.2f);
+	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+	//FVector MeshLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+}
 
+// Timer to slow down projectile launch to give the animation time to catchup
+void ASCharacter::PrimaryAttack_TimeElapsed(){
+	UE_LOG(LogTemp, Warning, TEXT("TimeElapse Called"));
+
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	//Spawn From Location
+	FTransform SpawmTM = FTransform(GetControlRotation(), HandLocation);
+	//Set Spawn Parameters
 	FActorSpawnParameters SpawnParams;
 	//What to do with collision - The rules for collision
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	//Spawn somthing
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawmTM,SpawnParams);
+	
+	SpawnParams.Instigator = this;
+	
+	//Spawn Projectile
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawmTM, SpawnParams);
 }
 
-void ASCharacter::DebugLines()
-{
+void ASCharacter::PrimaryInteract(){
+	if (InteractionComp)
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("PrimaryInteract"));
+		InteractionComp->PrimaryInteract();
+	}
+}
+
+void ASCharacter::DebugLines(){
 	// -- Rotation Visualization -- //
 	const float DrawScale = 100.0f;
 	const float Thickness = 5.0f;

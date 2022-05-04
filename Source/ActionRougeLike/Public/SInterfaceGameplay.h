@@ -4,24 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "SGameplayInterface.generated.h"
+#include "SInterfaceGameplay.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class USGameplayInterface : public UInterface
+class USInterfaceGameplay : public UInterface
 {
 	GENERATED_BODY()
 };
 
-
-class ACTIONROUGELIKE_API ISGameplayInterface
+/**
+ * 
+ */
+class ACTIONROUGELIKE_API ISInterfaceGameplay
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
-	//This is to know who to apply the change to
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)//This function is designed to be overridden by a Blueprint, but also has a default native implementation
-	void Interact(APawn* InstigatorPawn);
 };

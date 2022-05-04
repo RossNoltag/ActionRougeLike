@@ -14,7 +14,7 @@ ASMagicProjectile::ASMagicProjectile()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("Sphere Component");
 	//SphereComponent->SetCollisionObjectType(ECC_WorldDynamic);
 	SphereComponent->SetCollisionProfileName("Projectile");
-	SphereComponent->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnCompHit);
+	//SphereComponent->OnComponentHit.AddDynamic(this, &ASMagicProjectile::OnCompHit);
 	RootComponent = SphereComponent;
 
 	ParticleSysComponent = CreateDefaultSubobject<UParticleSystemComponent>("Movement Component");
@@ -40,13 +40,13 @@ void ASMagicProjectile::Tick(float DeltaTime)
 }
 
 
-void ASMagicProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+//void ASMagicProjectile::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComponent != NULL))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Magic Projectile"));
+	//if ((OtherActor != NULL) && (OtherActor != this) && (OtherComponent != NULL))
+//	{
+	//	UE_LOG(LogTemp, Warning, TEXT("Magic Projectile"));
 		//this->BeginDestroy();
-		this->Destroy();
-	}
-}
+	//	this->Destroy();
+	//}
+//}
 

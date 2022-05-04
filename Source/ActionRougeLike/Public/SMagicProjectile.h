@@ -21,13 +21,13 @@ public:
 
 protected:
 
-	UPROPERTY(visibleAnywhere)
+	UPROPERTY(visibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComponent;
 
-	UPROPERTY(visibleAnywhere)
+	UPROPERTY(visibleAnywhere, BlueprintReadOnly)
 	UProjectileMovementComponent* MovementComponent;
 
-	UPROPERTY(visibleAnywhere)
+	UPROPERTY(visibleAnywhere, BlueprintReadOnly)
 	UParticleSystemComponent* ParticleSysComponent;
 
 	// Called when the game starts or when spawned
@@ -39,7 +39,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	//UFUNCTION()
+	//void OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 };

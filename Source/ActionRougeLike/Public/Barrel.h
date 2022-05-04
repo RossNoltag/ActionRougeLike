@@ -22,14 +22,14 @@ public:
 
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(EditAnywhere)
-	USceneComponent* SceneComp;
+	//UPROPERTY(EditAnywhere)
+	//USceneComponent* SceneComp;
 
-	UPROPERTY(EditAnywhere)
-	USphereComponent* SphereComp;
+	//UPROPERTY(EditAnywhere)
+	//USphereComponent* SphereComp;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshComp;
@@ -37,11 +37,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 	URadialForceComponent* RadialForceComp;
 
-	UFUNCTION()
-	void OnHit();
+protected:
+	virtual void PostInitializeComponents() override;
 
-public:	
+//public:	S
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
+
+protected:
+	UFUNCTION()
+	void OnActorHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
 
 };

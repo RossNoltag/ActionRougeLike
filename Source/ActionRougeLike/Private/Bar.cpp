@@ -31,7 +31,7 @@ ABar::ABar(const FObjectInitializer& ObjectInitializer)
 
 	BarMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh Component"));
 	BarMeshComp->SetupAttachment(SceneComp);
-
+	
 
 	CapsComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Component"));
 	CapsComp->SetupAttachment(BarMeshComp);
@@ -99,6 +99,7 @@ void ABar::SweepArea()
 	TArray<FHitResult> HitArray;
 	//float Radius = 500.f;
 	float Strength = 1000.f;
+	float StrengthOnSelf = 100.f;
 	const FCollisionShape ShpereShape = FCollisionShape::MakeSphere(Radius);
 
 	//DrawDebugSphere(GetWorld(), this->GetActorLocation(), 1000.f , 50, FColor::Orange, true);
@@ -115,7 +116,7 @@ void ABar::SweepArea()
 			if (MeshComp){
 				//UE_LOG(LogTemp, Warning, TEXT("Checking for Mesh"));
 				MeshComp->AddRadialImpulse(Start, Radius, Strength, RIF_Constant, true);
-				this->BarMeshComp->AddRadialImpulse(Start, Radius, Strength, RIF_Constant, true);
+				this->BarMeshComp->AddRadialImpulse(Start, Radius, StrengthOnSelf, RIF_Constant, true);
 				
 				//Radius of blast
 				// Inside sphere

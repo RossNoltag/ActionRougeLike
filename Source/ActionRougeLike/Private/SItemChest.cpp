@@ -31,8 +31,9 @@ void ASItemChest::Tick(float DeltaTime)
 }
 
 //Function called by Interface 
-//void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
-//{
-	//->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
-//}
+void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ASItemChest::Interact_Implementation"));
+	LidMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
+}
 
